@@ -6,7 +6,7 @@ import { RouterLink, RouterView } from 'vue-router'
 <template>
   
 
-<h1>This is my first vue.js project by sonit</h1>
+
 
   <RouterView />
 </template>
