@@ -1,78 +1,86 @@
 <template>
   <div class="Wrapper">
+    <!-- Render Category Components based on currentGroupName -->
     <div class="Container" v-if="!loading && !error">
-      <CategoryComponent v-for="category in Categories" :key="category.id"
-      :color="category.color"  
-      :name="category.name"
-      :productCount="category.productCount"
-      :image="category.image"
+      <CategoryComponent
+        v-for="category in categories"
+        :key="category.id"
+        :color="category.color"
+        :name="category.name"
+        :productCount="category.productCount"
+        :image="category.image"
       />
     </div>
 
+    <!-- Render Promotion Components -->
     <div class="PromotionContainer" v-if="!loading && !error">
-      <PromotionComponent v-for="promotion in Promotions" :key="promotion.id"
-      :color="promotion.color"  
-      :title="promotion.title"
-      :image="promotion.image"
+      <PromotionComponent
+        v-for="promotion in promotions"
+        :key="promotion.id"
+        :color="promotion.color"
+        :title="promotion.title"
+        :image="promotion.image"
       />
     </div>
 
+    <!-- Loading and Error Handling -->
     <div v-if="loading">Loading...</div>
     <div v-if="error">{{ error }}</div>
   </div>
 
-  <RouterView/>
+  <RouterView />
 </template>
 
 <script>
-import axios from 'axios';
-import CategoryComponent from './components/Category.vue';
-import PromotionComponent from './components/Promotion.vue';
-import { RouterView } from 'vue-router';
+import CategoryComponent from "./components/Category.vue";
+import PromotionComponent from "./components/Promotion.vue";
+import { RouterView } from "vue-router";
+import { useProductStore } from "./stores/Product";
+import { mapState } from "pinia"; // Import mapState from Pinia
 
 export default {
   components: {
     CategoryComponent,
-    PromotionComponent
+    PromotionComponent,
   },
 
   data() {
     return {
-      Categories: [],
-      Promotions: [],
-      loading: true,
-      error: null
+      currentGroupName: 'Group A',  // Default group name
+      currentCategoryId: 1,         // Default category ID
+      loading: true,                // Track loading state
+      error: null,                  // Track error state
     };
   },
 
-  methods: {
-    async fetchCategories() {
-      try {
-        const response = await axios.get('http://localhost:3000/api/categories');
-        this.Categories = response.data;
-      } catch (error) {
-        this.error = 'Error fetching categories';
-      } finally {
-        this.loading = false;
-      }
-    },
+  computed: {
+    // Use mapState to map getters from the store to computed properties
+    ...mapState(useProductStore, {
+      promotions: 'promotions', // Fetch promotions directly from the store
 
-    async fetchPromotions() {
-      try {
-        const response = await axios.get('http://localhost:3000/api/promotions');
-        this.Promotions = response.data;
-      } catch (error) {
-        this.error = 'Error fetching promotions';
-      } finally {
-        this.loading = false;
-      }
-    }
+      // Dynamically filter categories and products based on the current group and category
+      categories(store) {
+        return store.getCategoriesByGroup(this.currentGroupName);
+      },
+      productsByCategory(store) {
+        return store.getProductsByCategory(this.currentCategoryId);
+      },
+      productsByGroup(store) {
+        return store.getProductsByGroup(this.currentGroupName);
+      },
+      popularProducts(store) {
+        return store.getPopularProducts;
+      },
+    }),
   },
 
   mounted() {
-    this.fetchCategories();
-    this.fetchPromotions();
-  }
+    // Fetch data from the API when the component is mounted
+    const productStore = useProductStore();
+    productStore.fetchCategories();
+    productStore.fetchPromotions();
+    productStore.fetchProducts();
+  },
 };
 </script>
 
