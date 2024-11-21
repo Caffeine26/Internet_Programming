@@ -5,10 +5,10 @@
       class="btn"
       >
           <div class="wrapper">
-              <span class="text">{{ text }}</span>
-              <Button @click="shopNow(text)"></Button>
+              <span class="title">{{ title }}</span>
+              <Button @click="shopNow(title)"></Button>
           </div>
-          <img :src="picture" alt="item picture" class="item-picture" />
+          <img :src="image" alt="item picture" class="item-picture" />
       </button>
   </div>
 </template>
@@ -23,13 +23,13 @@
 
       props: {
       color: String,
-      text: String,
-      picture: String,
+      title: String,
+      image: String,
       },
 
       methods:{
-          shopNow(text) {
-           alert("Let's shop: "+this.text);
+          shopNow(title) {
+           alert("Let's shop: "+this.title);
           }
       }
   };

@@ -1,129 +1,83 @@
 <template>
   <div class="Wrapper">
-    <div class="Container">
-      <CategoryComponent v-for="category in Categories" :key="category" 
+    <div class="Container" v-if="!loading && !error">
+      <CategoryComponent v-for="category in Categories" :key="category.id"
       :color="category.color"  
       :name="category.name"
-      :quantity="category.quantity"
-      :picture="category.picture"
+      :productCount="category.productCount"
+      :image="category.image"
       />
     </div>
 
-    <div class="PromotionContainer">
-      <PromotionComponent v-for="promotion in Promotions" :key="promotion" 
+    <div class="PromotionContainer" v-if="!loading && !error">
+      <PromotionComponent v-for="promotion in Promotions" :key="promotion.id"
       :color="promotion.color"  
-      :text="promotion.text"
-      :picture="promotion.picture"
+      :title="promotion.title"
+      :image="promotion.image"
       />
     </div>
+
+    <div v-if="loading">Loading...</div>
+    <div v-if="error">{{ error }}</div>
   </div>
 
-<RouterView/>
+  <RouterView/>
 </template>
 
 <script>
-  import CategoryComponent from './components/Category.vue';
-  import PromotionComponent from './components/Promotion.vue';
-  import { RouterView } from 'vue-router';
+import axios from 'axios';
+import CategoryComponent from './components/Category.vue';
+import PromotionComponent from './components/Promotion.vue';
+import { RouterView } from 'vue-router';
 
-  export default{
-    components: {
-        CategoryComponent,
-        PromotionComponent
-    },
+export default {
+  components: {
+    CategoryComponent,
+    PromotionComponent
+  },
 
-    data() {
+  data() {
     return {
-      Categories:[
-        {
-          color:"#F2FCE4",
-          name:"Hamburger",
-          quantity:"14 items",    
-          picture: (new URL("@/assets/Image/burger.png", import.meta.url))
-        },
-        {
-          color:"#FFFCEB" ,
-          name:"Peach",
-          quantity:"17 items",    
-          picture:(new URL("@/assets/Image/peach.png", import.meta.url))
-        },
-        {
-          color:"#ECFFEC" ,
-          name:"Oganic Kiwi",
-          quantity:"21 items",    
-          picture:(new URL("@/assets/Image/Kiwi.png", import.meta.url))
-        },
-        {
-          color:"#FEEFEA" ,
-          name:"Red Apple",
-          quantity:"68 items",    
-          picture:(new URL("@/assets/Image/red apple.png", import.meta.url))
-        },
-        {
-          color:"#FFF3EB" ,
-          name:"Snack",
-          quantity:"34 items",    
-          picture:(new URL("@/assets/Image/snack.png", import.meta.url))
-        },
-        {
-          color:"#FFF3FF" ,
-          name:"Black plum",
-          quantity:"25 items",    
-          picture:(new URL("@/assets/Image/black Plum.png", import.meta.url))
-        },
-        {
-          color:"#F2FCE4" ,
-          name:"Vegetable",
-          quantity:"65 items",    
-          picture:(new URL("@/assets/Image/vegatable.png", import.meta.url))
-        },
-        {
-          color:"#FFFCEB" ,
-          name:"Headphone",
-          quantity:"33 items",    
-          picture:(new URL("@/assets/Image/head phone.png", import.meta.url))
-        },
-
-        {
-          color:"#F2FCE4" ,
-          name:"Chocolate",
-          quantity:"54 items",    
-          picture:(new URL("@/assets/Image/cake & milk.png", import.meta.url))
-        },
-        {
-          color:"#FFF3FF" ,
-          name:"Orange",
-          quantity:"63 items",    
-          picture:(new URL("@/assets/Image/orange.png", import.meta.url))
-        }
-      ],
-
-      Promotions:[
-        {
-          color:"#F0E8D5",
-          text:"Everyday Fresh & Clean with Our Products",
-          picture:(new URL("@/assets/Image/onion.jpg", import.meta.url))
-        },
-        {
-          color:"#F3E8E8",
-          text:"Make your Breakfast Healthy and Easy",
-          picture:(new URL("@/assets/Image/strawbery milk.png", import.meta.url))
-        },
-        {
-          color:"#E7EAF3",
-          text:"The best Organic Product Online",
-          picture:(new URL("@/assets/Image/mix vegatable.jpg", import.meta.url))
-        },
-      ],
+      Categories: [],
+      Promotions: [],
+      loading: true,
+      error: null
     };
   },
-  };
 
+  methods: {
+    async fetchCategories() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/categories');
+        this.Categories = response.data;
+      } catch (error) {
+        this.error = 'Error fetching categories';
+      } finally {
+        this.loading = false;
+      }
+    },
 
+    async fetchPromotions() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/promotions');
+        this.Promotions = response.data;
+      } catch (error) {
+        this.error = 'Error fetching promotions';
+      } finally {
+        this.loading = false;
+      }
+    }
+  },
+
+  mounted() {
+    this.fetchCategories();
+    this.fetchPromotions();
+  }
+};
 </script>
 
 <style scoped>
-.Wrapper{  
+.Wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -134,14 +88,14 @@
   padding: 0px 20px;
 }
 
-.Container{
+.Container {
   width: 83%;
   display: flex;
   justify-content: space-evenly;
   margin-bottom: 50px;
 }
 
-.PromotionContainer{
+.PromotionContainer {
   width: 85%;
   display: flex;
   justify-content: space-evenly;
