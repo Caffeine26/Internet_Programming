@@ -55,7 +55,7 @@ import CategoryComponent from './components/Category.vue';
 import PromotionComponent from './components/Promotion.vue';
 import Product from './components/Product.vue';
 import menuComponent from './components/Menu.vue';
-import { useProductStore } from "./stores/product";
+import { useProductStore } from "./stores/Product";
 import { onMounted } from "vue";
 import { mapState } from "pinia";
 
