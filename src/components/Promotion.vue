@@ -20,12 +20,9 @@
       components: {
           Button,
       },
-
-      props: {
-      color: String,
-      text: String,
-      picture: String,
-      },
+      name:"promotion",
+      props: ["color","picture","text","buttonColor"],
+      
 
       methods:{
           shopNow(text) {
