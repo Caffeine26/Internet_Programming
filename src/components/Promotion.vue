@@ -5,10 +5,10 @@
       class="btn"
       >
           <div class="wrapper">
-              <span class="text">{{ text }}</span>
-              <Button @click="shopNow(text)"></Button>
+              <span class="title">{{ title }}</span>
+              <Button @click="shopNow(title)"></Button>
           </div>
-          <img :src="picture" alt="item picture" class="item-picture" />
+          <img :src="image" alt="item picture" class="item-picture" />
       </button>
   </div>
 </template>
@@ -20,13 +20,15 @@
       components: {
           Button,
       },
+
       name:"promotion",
       props: ["color","picture","text","buttonColor"],
       
 
+
       methods:{
-          shopNow(text) {
-           alert("Let's shop: "+this.text);
+          shopNow(title) {
+           alert("Let's shop: "+this.title);
           }
       }
   };
