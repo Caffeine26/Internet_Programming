@@ -8,7 +8,7 @@
                 <span class="text">{{ text }}</span>
                 <Button @click="shopNow(text)"></Button>
             </div>
-            <img :src="picture" alt="item picture" class="item-picture" />
+            <img :src="image" alt="item picture" class="item-picture" />
         </button>
     </div>
   </template>
@@ -21,8 +21,12 @@
             Button,
         },
         name:"promotion",
-        props: ["color","picture","text","buttonColor"],
-        
+        props: {
+            title:String,
+            button:String,
+            color:String,
+            image:String,
+        },
   
         methods:{
             shopNow(text) {
